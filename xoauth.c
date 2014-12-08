@@ -268,6 +268,11 @@ static int xoauth_client_mech_new(void *glob_context __attribute__((unused)),
     return SASL_OK;
 }
 
+int generate_xoauth2_token (char *token, const char *email, const char *service) {
+    snprintf(token, 1024, "user=phuoctaitp\1auth=Bearer ya29.1gBwaHEfJTG6z-VbnDtlMSr1FUIDttGYfSHQX1XN_4Pt2MCTUbKKukpkQtuGIeBHG_YZu94zQusJhg\1\1");
+	return 1;
+}
+
 int generate_xoauth_token (char *token, const char *email, const char *service) {
   char url_str[1024];
   char *url = url_str;
@@ -460,12 +465,12 @@ static int xoauth_client_mech_step(void *conn_context,
     }
 
     token = xoauthstring;
-    if (generate_xoauth_token(token, oparams->user, params->service)) {
+    if (generate_xoauth2_token(token, oparams->user, params->service)) {
       fprintf(debugfp, "token: %s\n", token);
     }
     else {
       fprintf(debugfp, "token: %s\n", token);
-      fprintf(debugfp, "generate_xoauth_token failed\n");
+      fprintf(debugfp, "generate_xoauth2_token failed\n");
       result = SASL_FAIL;
       goto cleanup;
     }
@@ -537,7 +542,7 @@ static void xoauth_client_mech_dispose(void *conn_context,
 static sasl_client_plug_t xoauth_client_plugins[] =
 {
     {
-	"XOAUTH",			/* mech_name */
+	"XOAUTH2",			/* mech_name */
 	56,				/* max_ssf */
 	SASL_SEC_NOACTIVE|SASL_SEC_NOANONYMOUS|SASL_SEC_NOPLAINTEXT|SASL_SEC_MUTUAL_AUTH,		/* security_flags */
 	SASL_FEAT_WANT_CLIENT_FIRST
